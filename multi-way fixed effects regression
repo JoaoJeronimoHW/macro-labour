@@ -20,13 +20,13 @@
 		predict double res, res
 		replace temp = res+_b[worker_fe]*worker_fe, nopromote
 		capture drop worker_fe
-		egen double worker_fe = mean(temp), by(ntrab)
+		egen double worker_fe = mean(temp), by(worker_id)
 		replace temp = res+_b[firm_fe]*firm_fe, nopromote
 		capture drop firm_fe
-		egen double firm_fe=mean(temp), by(emp_id)
+		egen double firm_fe=mean(temp), by(firm_id)
 		replace temp = res+_b[occupation_fe]*occupation_fe, nopromote
 		capture drop occupation_fe
-		egen double occupation_fe=mean(temp), by(occup_group)	
+		egen double occupation_fe=mean(temp), by(occupation_id)	
 		local i = `i'+1	
 		}
 	}
