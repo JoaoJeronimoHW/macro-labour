@@ -1,0 +1,55 @@
+//Gauss-seidel algorithm for three-way fixed effects 
+
+	gen double temp=0
+	gen double worker_fe = 0
+	gen double firm_fe = 0
+	gen double occupation_fe = 0
+	local rss1 = 0
+	local dif = 1
+	local i=0
+	
+	while abs(`dif')>0.01 { 
+	
+		quietly {
+		reg real_wage prime_age prime_age2 tenure tenure2 working_hours firm_age firm_size tfp worker_fe firm_fe occupation_fe
+		local rss2 = `rss1'
+		local rss1 = e(rss)
+		local dif = `rss2'-`rss1'
+		noisily display "Difference: `rss2'-`rss1' at $S_TIME"
+		capture drop res
+		predict double res, res
+		replace temp = res+_b[worker_fe]*worker_fe, nopromote
+		capture drop worker_fe
+		egen double worker_fe = mean(temp), by(ntrab)
+		replace temp = res+_b[firm_fe]*firm_fe, nopromote
+		capture drop firm_fe
+		egen double firm_fe=mean(temp), by(emp_id)
+		replace temp = res+_b[occupation_fe]*occupation_fe, nopromote
+		capture drop occupation_fe
+		egen double occupation_fe=mean(temp), by(occup_group)	
+		local i = `i'+1	
+		}
+	}
+	
+	display "Total Number of Iterations --> " `i'
+	
+	quietly real_wage prime_age prime_age2 tenure tenure2 working_hours firm_age firm_size tfp worker_fe firm_fe occupation_fe i.year
+	
+	estimates table, b(%10.7f)
+
+      //convergence criterium is arbitrary, test for different values as local maximums might be an issue
+
+//AKM
+
+		reghdfe real_wage prime_age prime_age2 tenure tenure2 working_hours firm_age firm_size tfp i.year, absorb(worker_id firm_id occupation_id, savefe) vce(cluster ntrab) res(ehat)
+		
+		bysort industry_id: egen ind_akm = mean(__hdfe2__)
+		
+		tw (lfit industry_effects_gu mean_educ) (scatter industry_effects_gu mean_educ [w=cae_weight], msymbol(0h)) (lfit ind_akm mean_educ) (scatter ind_akm mean_educ [w=cae_weight], msymbol(0h))
+		tw (lfit ind_akm mean_educ) (scatter ind_akm mean_educ [w=cae_weight], msymbol(0h))
+		
+    rename __hdfe3__ akm_fe			
+    rename __hdfe2__ akm_fe
+		rename __hdfe1__ akm_we
+
+    //check for orthogonality between residuals and firm identifiers with event-study for industry movers, and check for assortative matching - corr(worker_fe, firm_fe)
