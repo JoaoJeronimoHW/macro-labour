@@ -45,8 +45,7 @@
 		
 		bysort industry_id: egen ind_akm = mean(__hdfe2__)
 		
-		tw (lfit industry_effects_gu mean_educ) (scatter industry_effects_gu mean_educ [w=cae_weight], msymbol(0h)) (lfit ind_akm mean_educ) (scatter ind_akm mean_educ [w=cae_weight], msymbol(0h))
-		tw (lfit ind_akm mean_educ) (scatter ind_akm mean_educ [w=cae_weight], msymbol(0h))
+		tw (lfit ind_akm mean_education) (scatter ind_akm mean_educ [w=cae_weight], msymbol(0h)) //looking for inter-industry wage differentials
 		
     rename __hdfe3__ akm_fe			
     rename __hdfe2__ akm_fe
