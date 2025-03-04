@@ -13,7 +13,7 @@ library(quantreg)
 library(msm)
 library(boot)
 
-# 1. Data preparation
+# Data preparation
 
 gc()
 
@@ -26,8 +26,6 @@ bartik_full_postdo <- read_dta("C:/Users/a7654/OneDrive/Ambiente de Trabalho/Her
 labour_intensive = subset(bartik_full_postdo, ind2d %in% c(1, 2, 3, 46, 47, 53, 55, 56, 61, 64, 65, 66, 68, 69, 70, 74, 79, 80))
 
 bartik_full_postdo = labour_intensive
-
-# Obtain 2-period productivity lag
 
 # Lagged productivity variable
 bartik_full_postdo <- bartik_full_postdo %>%
