@@ -7,5 +7,5 @@ Wage equations ran in Stata 14 that provide two ways of estimating three-way fix
 
 2. WangBellemare2019
 
-I wrote an R script that uses the specification of Wang and Bellemare (2019) to estimate the OLS and IV bias of specifications with lagged instruments.
+R script that uses the specification of Wang and Bellemare (2019) to estimate the OLS and IV bias of specifications with lagged instruments.
 
